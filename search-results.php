@@ -62,8 +62,20 @@ $match_count = count($_GET["withIngredients"]);
 
 
               if($has_matches === false){
+                echo "<div class='d-flex flex-column justify-content-center align-items-center'>";
                 echo "<h3 class='text-muted fw-bold w-75 mt-5 text-center'>Unable to Find Cocktails Using All Those Ingredients!</h3>";
+                echo "<a href='/' class='btn btn-secondary mt-3'>Start Over?</a>";
+                echo "</div>";
               }
+              else {
+                echo "<div class='d-flex flex-column justify-content-center align-items-center'>";
+                echo "<small class='text-muted font-monospace fw-light w-75 mt-5 text-center'>If you would like to start over at any point in the search, go ahead and click the button below!</small>";
+                echo "<a href='/' class='btn btn-secondary mt-3'>Clear Search Query</a>";
+                echo "</div>";
+              }
+
+
+
               ?>
             </div>
           </div>

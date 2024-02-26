@@ -93,11 +93,12 @@ function addNewIngredient(PDO $pdo, string $name, string $category):void {
 }
 
 
-function addNewCocktail(PDO $pdo, string $name):void {
-  $sql = "INSERT INTO tbl_cocktails (name) ".
-         "VALUES (?)";
+function addNewCocktail(PDO $pdo, string $name, string $notes=""):void {
+  $sql = "INSERT INTO tbl_cocktails (name, notes) ".
+         "VALUES (?, ?)";
   $args = [
     $name,
+    $notes,
   ];
   $statement = sendPreparedSQL($pdo, $sql, $args);
 

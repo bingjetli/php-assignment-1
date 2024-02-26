@@ -8,7 +8,7 @@ $pdo = getNewPDOInstance();
 if(isset($_POST["createCocktailFlag"]) == true){
 
   //First create the cocktail entry.
-  addNewCocktail($pdo, $_POST["cocktailName"]);
+  addNewCocktail($pdo, $_POST["cocktailName"], $_POST["cocktailNotes"]);
 
 
   //Then retreive it's id.
@@ -66,11 +66,17 @@ if(isset($_POST["createCocktailFlag"]) == true){
           <?php
           if(isset($_POST["setFractionsFlag"]) === true){
             $cocktail_name = $_POST["cocktailName"];
+            $cocktail_notes = $_POST["cocktailNotes"];
             echo "<h2 class='text-muted fs-3 text-center'>Set Ingredient Proportions for <span class='display-6 d-block'>$cocktail_name</span></h2>";
             echo "<input form='set-fractions-form' ".
                         "type='hidden' ".
                         "value='$cocktail_name' ".
                         "name='cocktailName'>";
+            echo "<input form='set-fractions-form' ".
+                        "type='hidden' ".
+                        "value='$cocktail_notes' ".
+                        "name='cocktailNotes'>";
+
 
 
             echo "<div class='list-group mt-5'>";
@@ -87,6 +93,7 @@ if(isset($_POST["createCocktailFlag"]) == true){
                               "type='hidden' ".
                               "value='$i_name' ".
                               "name='cocktailIngredients[$i_id][name]'>".
+
                      "</div>".
                      "<div class='input-group w-auto'>".
                        "<input form='set-fractions-form' ".
@@ -115,6 +122,14 @@ if(isset($_POST["createCocktailFlag"]) == true){
                           "placeholder='#'>".
                    "<label for='name-input'>Name of the Cocktail</label>".
                  "</div>";
+
+            echo "<textarea form='create-cocktail-form' ".
+                           "class='form-control mt-2' ".
+                           "placeholder='Notes & Comments...' ".
+                           "rows='4' ".
+                           "cols='50' ".
+                           "style='resize:none' ".
+                           "name='cocktailNotes'></textarea>";
 
             echo "<h2 class='text-muted fs-5 text-center mt-3'>Ingredients</h2>".
                  "<div class='accordion mt-3' id='ingredients-accordion'>";

@@ -45,19 +45,31 @@ incrementCocktailUsageCount($pdo, intval($_GET["id"]));
 
 
     <div class="container">
-      <div class="row">
-        <div class="col">
+      <div class="row justify-content-center">
+        <div class="col-6">
           <h1>
             <?php
+
+
               echo $cocktail_details["name"];
             ?>
           </h1>
+          <?php
+
+            $c_uses = $cocktail_details["times_used"];
+            $c_last_used = $cocktail_details["last_used"];
+            $c_notes = $cocktail_details["notes"];
+
+          
+            echo "<small class='d-block font-monospace text-muted'>Viewed $c_uses times. Last viewed on $c_last_used.</small>";
+            echo "<div class='my-1'>$c_notes</div>";
+          ?>
         </div>
       </div>
 
 
-      <div class="row">
-        <div class="col">
+      <div class="row justify-content-center">
+        <div class="col-6">
           <?php
             echo "<div class='list-group mt-5'>";
 
@@ -76,17 +88,8 @@ incrementCocktailUsageCount($pdo, intval($_GET["id"]));
                               "name='cocktailIngredients[$i_id][name]'>".
                      "</div>".
                      "<div class='input-group w-auto'>".
-                       "<input form='set-fractions-form' ".
-                              "type='number' ".
-                              "class='form-control text-center' ".
-                              "id='$i_name-fractions-input' ".
-                              "min='1' ".
-                              "value='1' ".
-                              "disabled ".
-                              "max='100' ".
-                              "name='cocktailIngredients[$i_id][fraction]' ".
-                              "placeholder='#'>".
-                       "<label for='name-input' class='input-group-text text-center'>Parts</label>".
+                       "<span class='input-group-text'>$i_fraction</span>".
+                       "<span class='input-group-text'>parts</span>".
                      "</div>".
                    "</div>";
             }
