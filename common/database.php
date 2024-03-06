@@ -259,4 +259,6 @@ function generateIngredientCategoryMap(PDOStatement $ingredients_stmt):array {
 
   return $map;
 }
+
+
 ?>
