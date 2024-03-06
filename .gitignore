@@ -1,2 +1,3 @@
 common/.dbenv.php
 pyftpsync.yaml
+.pyftpsync.json
