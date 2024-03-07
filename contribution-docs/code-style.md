@@ -48,6 +48,9 @@ Set your editor to use **spaces** instead of **tabs**.
 *2 spaces* mark an indentation.
 
 
+&nbsp;
+
+
 Spaces because tab characters (these: `\t`) can cause code to be displayed in unexpected ways, 
 especially when multiple people are editing the same files.
 
@@ -60,7 +63,7 @@ without the statement clipping outside the editor window.
 &nbsp;
 
 
->#### SETTING INDENTATION SETTINGS IN VSCODE
+>## How to set Indentation Setting in Vscode
 >
 >Open the command palette by pressing `CTRL+SHIFT+P` on the keyboard.
 >
@@ -85,6 +88,7 @@ without the statement clipping outside the editor window.
 
 When starting a new code block, begin with the opening curly brace on the same line as the statement that opened it.
 
+&nbsp;
 
 If...Else Blocks :
 ```php
@@ -100,7 +104,7 @@ else {
 ```
 
 
-//Loop blocks :
+Loop blocks :
 ```
 foreach(condition){
 
@@ -147,6 +151,9 @@ echo "<h2 class='accordion-header'>".
 "</h2>";
 
 ```
+
+
+&nbsp;
 
 
 This might not happen in this project, 
