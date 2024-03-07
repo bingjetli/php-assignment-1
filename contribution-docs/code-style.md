@@ -95,7 +95,7 @@ When starting a new code block, begin with the opening curly brace on the same l
 &nbsp;
 
 
-This - If...Else Blocks :
+This
 ```php
 if (condition) {
 
@@ -109,7 +109,7 @@ else {
 ```
 
 
-This - Loop blocks :
+This
 ```
 foreach(condition){
 

@@ -11,6 +11,7 @@ require_once("common"/database.php);
 
 
 Then get a new PDO instance using `getNewPDOInstance()` and save it to a variable :
+
 ```php
 $pdo = getNewPDOInstance();
 
@@ -20,12 +21,6 @@ $pdo = getNewPDOInstance();
 
 
 Now, you can pass this PDO instance to whatever database function you need to call. 
-
-
-&nbsp;
-
-
-For example :
 
 ```php
 getMostRecentCocktails($pdo);
