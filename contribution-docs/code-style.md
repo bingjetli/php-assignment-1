@@ -57,21 +57,24 @@ but now causes code to take up less horizontal space so we can see more code
 without the statement clipping outside the editor window.
 
 
-#### SETTING INDENTATION SETTINGS IN VSCODE
-
-Open the command palette by pressing `CTRL+SHIFT+P` on the keyboard.
+&nbsp;
 
 
-Type "settings" in the textbox and select "Preferences: Open User Settings".
-
-
-Type "indentation" inside the "Search Settings" textbox.
-
-
-Look for "Editor: Tab Size" and set that to "2".
-
-
-Finally look for "Editor: Insert Spaces" and make sure the checkbox is ticked.
+>#### SETTING INDENTATION SETTINGS IN VSCODE
+>
+>Open the command palette by pressing `CTRL+SHIFT+P` on the keyboard.
+>
+>
+>Type "settings" in the textbox and select "Preferences: Open User Settings".
+>
+>
+>Type "indentation" inside the "Search Settings" textbox.
+>
+>
+>Look for "Editor: Tab Size" and set that to "2".
+>
+>
+>Finally look for "Editor: Insert Spaces" and make sure the checkbox is ticked.
 
 
 &nbsp;
@@ -82,8 +85,9 @@ Finally look for "Editor: Insert Spaces" and make sure the checkbox is ticked.
 
 When starting a new code block, begin with the opening curly brace on the same line as the statement that opened it.
 
+
+If...Else Blocks :
 ```php
-//If...Else Blocks
 if (condition) {
 
   //Do something...
@@ -93,13 +97,15 @@ else {
   //Do another thing...
 }
 
+```
 
-//Loop blocks
+
+//Loop blocks :
+```
 foreach(condition){
 
   //Do this for each item...
 }
-
 
 ```
 
@@ -115,9 +121,13 @@ keep them aligned with the statement that opened it.
 
 This might be easier to understand with examples :
 
+
+&nbsp;
+
+
+Maintains HTML Structure and is readable. This is also why we use spaces instead of tab characters :
 ```php
 
-//Maintains HTML Structure and is readable. This is also why we use spaces instead of tab characters.
 echo "<h2 class='accordion-header'>".
      "<button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#$c-accordion-body'>".
        "$c".
@@ -125,20 +135,30 @@ echo "<h2 class='accordion-header'>".
    "</h2>";
 
 
-// Imagine trying to read something like this, but with more elements.
+```
+
+
+Imagine trying to read something like this, but with more elements :
+```php
 echo "<h2 class='accordion-header'>".
 "<button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#$c-accordion-body'>".
 "$c".
 "</button>".
 "</h2>";
 
+```
 
 
-//This might not happen, but if function parameters are too long or there are too many.
+This might not happen in this project, 
+but if function parameters are too long or there are too many :
+```php
 imTryingToCallThisFunction(with, parameter1, long_parameter2, extra_long_parameter3, extra_extra_extra_long_parameter4);
 
+```
 
-//Put them on a new line and align them with whitespace.
+
+Put them on a new line and align them with whitespace :
+```php
 imTryingToCallThisFunction(with, 
                            parameter1, 
                            long_parameter2, 
@@ -148,15 +168,20 @@ imTryingToCallThisFunction(with,
 ```
 
 
+&nbsp;
+&nbsp;
+
+
 # And Lastly, Comments
 
 For comments, if you're starting a new block, and the first line is a comment, 
 let there be a blank line between the starting block and the comment.
 
+
+&nbsp;
+
+For example, this..
 ```php
-//For example
-
-//This...
 foreach(condition){
 
   //Here's a comment that describes something...
@@ -167,8 +192,11 @@ foreach(condition){
   callAnotherFunction();
 }
 
+```
 
-//Instead of this...less readable no?
+
+Instead of this...less readable no?
+```php
 foreach(condition){
   //Here's a comment that describes something...
   callSomeFunctionHere();
@@ -177,5 +205,4 @@ foreach(condition){
   //Describe something else...
   callAnotherFunction();
 }
-
 ```
