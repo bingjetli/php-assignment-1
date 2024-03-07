@@ -1,30 +1,27 @@
 # Code Style
 
-To make it so that our codebase looks consistent and readable, I ask that we follow these guidelines.
+To make it so that our codebase looks consistent and readable, I ask that we follow these guidelines. I think compared to larger projects, these guidelines are quite minimal.
 
-I think compared to larger projects, these guidelines are quite minimal.
 
 &nbsp;
-
-> tl;dr : good code style = easy to read & maintain
+&nbsp;
 
 
 # Variables
 
 Variables should be written in `snake_case`. So all lowercase and whitespaces are replaced with an underscore.
 
+
 &nbsp;
 
-> Use `snake_case_variables`.
+
 
 ```php
-//For example
 $my_amazing_variable_name_here = "whoa...";
 
 $calculation_results = someFunctionThatCalculatesSomething();
 
 ```
-
 
 &nbsp;
 &nbsp;
@@ -34,15 +31,15 @@ $calculation_results = someFunctionThatCalculatesSomething();
 
 Function names should be written in `camelCase`. So the first word is lowercase, and every word after that is Capitalized. There are no underscores.
 
+
 &nbsp;
 
->`useCamelCaseFunctionNames()`
 
 ```php
-//For example
-
 function demonstrateHowToWriteFunctionNames(){...}
+
 function beASecondDemonstration(){...}
+
 function calculateSomething(){...}
 
 ```
@@ -54,26 +51,16 @@ function calculateSomething(){...}
 
 # Indentation
 
-Set your editor to use **spaces** instead of **tabs**. 
-
-*2 spaces* mark an indentation.
+Set your editor to use **spaces** instead of **tabs**. *2 spaces* mark an indentation.
 
 
 &nbsp;
 
 
-Spaces because tab characters (these: `\t`) can cause code to be displayed in unexpected ways, 
-especially when multiple people are editing the same files.
+Spaces because tab characters can cause code to be displayed in unexpected ways, especially when multiple people are editing the same files.
 
 
-Use 2 Spaces because this is enough to visually indicate an indentation, 
-but now causes code to take up less horizontal space so we can see more code 
-without the statement clipping outside the editor window.
-
-&nbsp;
-
-
-> tabs bad, spaces good, 2 spaces = 1 indent
+Use 2 Spaces because this is enough to visually indicate an indentation, but now causes code to take up less horizontal space so we can see more code without the statement clipping outside the editor window.
 
 
 &nbsp;
@@ -104,9 +91,11 @@ without the statement clipping outside the editor window.
 
 When starting a new code block, begin with the opening curly brace on the same line as the statement that opened it.
 
+
 &nbsp;
 
-If...Else Blocks :
+
+This - If...Else Blocks :
 ```php
 if (condition) {
 
@@ -120,7 +109,7 @@ else {
 ```
 
 
-Loop blocks :
+This - Loop blocks :
 ```
 foreach(condition){
 
@@ -141,16 +130,11 @@ keep them aligned with the statement that opened it.
 
 This might be easier to understand with examples :
 
-&nbsp;
-
-
->Use spaces to align code. Keep HTML Structure.
-
 
 &nbsp;
 
 
-Maintains HTML Structure and is readable. This is also why we use spaces instead of tab characters :
+This
 ```php
 
 echo "<h2 class='accordion-header'>".
@@ -163,7 +147,7 @@ echo "<h2 class='accordion-header'>".
 ```
 
 
-Imagine trying to read something like this, but with more elements :
+Not This
 ```php
 echo "<h2 class='accordion-header'>".
 "<button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#$c-accordion-body'>".
@@ -177,21 +161,19 @@ echo "<h2 class='accordion-header'>".
 &nbsp;
 
 
-This might not happen in this project, 
-but if function parameters are too long or there are too many :
-```php
-imTryingToCallThisFunction(with, parameter1, long_parameter2, extra_long_parameter3, extra_extra_extra_long_parameter4);
-
-```
-
-
-Put them on a new line and align them with whitespace :
+This
 ```php
 imTryingToCallThisFunction(with, 
                            parameter1, 
                            long_parameter2, 
                            extra_long_parameter3, 
                            extra_extra_extra_long_parameter4);
+
+```
+
+Not This
+```php
+imTryingToCallThisFunction(with, parameter1, long_parameter2, extra_long_parameter3, extra_extra_extra_long_parameter4);
 
 ```
 
@@ -202,18 +184,12 @@ imTryingToCallThisFunction(with,
 
 # And Lastly, Comments
 
-For comments, if you're starting a new block, and the first line is a comment, 
-let there be a blank line between the starting block and the comment.
+For comments, if you're starting a new block, and the first line is a comment, let there be a blank line between the starting block and the comment.
 
 &nbsp;
 
 
->Insert a newline after a code block if writing a comment.
-
-
-&nbsp;
-
-For example, this..
+This
 ```php
 foreach(condition){
 
@@ -228,7 +204,7 @@ foreach(condition){
 ```
 
 
-Instead of this...less readable no?
+Not this
 ```php
 foreach(condition){
   //Here's a comment that describes something...
