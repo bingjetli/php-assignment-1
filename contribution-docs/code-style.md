@@ -138,10 +138,10 @@ This
 ```php
 
 echo "<h2 class='accordion-header'>".
-     "<button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#$c-accordion-body'>".
-       "$c".
-     "</button>".
-   "</h2>";
+       "<button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#$c-accordion-body'>".
+         "$c".
+       "</button>".
+     "</h2>";
 
 
 ```
