@@ -4,10 +4,18 @@ To make it so that our codebase looks consistent and readable, I ask that we fol
 
 I think compared to larger projects, these guidelines are quite minimal.
 
+&nbsp;
+
+> tl;dr : good code style = easy to read & maintain
+
 
 # Variables
 
 Variables should be written in `snake_case`. So all lowercase and whitespaces are replaced with an underscore.
+
+&nbsp;
+
+> Use `snake_case_variables`.
 
 ```php
 //For example
@@ -26,6 +34,9 @@ $calculation_results = someFunctionThatCalculatesSomething();
 
 Function names should be written in `camelCase`. So the first word is lowercase, and every word after that is Capitalized. There are no underscores.
 
+&nbsp;
+
+>`useCamelCaseFunctionNames()`
 
 ```php
 //For example
@@ -58,6 +69,11 @@ especially when multiple people are editing the same files.
 Use 2 Spaces because this is enough to visually indicate an indentation, 
 but now causes code to take up less horizontal space so we can see more code 
 without the statement clipping outside the editor window.
+
+&nbsp;
+
+
+> tabs bad, spaces good, 2 spaces = 1 indent
 
 
 &nbsp;
@@ -125,6 +141,11 @@ keep them aligned with the statement that opened it.
 
 This might be easier to understand with examples :
 
+&nbsp;
+
+
+>Use spaces to align code. Keep HTML Structure.
+
 
 &nbsp;
 
@@ -183,6 +204,11 @@ imTryingToCallThisFunction(with,
 
 For comments, if you're starting a new block, and the first line is a comment, 
 let there be a blank line between the starting block and the comment.
+
+&nbsp;
+
+
+>Insert a newline after a code block if writing a comment.
 
 
 &nbsp;
