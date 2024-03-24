@@ -39,8 +39,9 @@ incrementCocktailUsageCount($pdo, intval($_GET["id"]));
   </head>
   <body>
 
-    <?php
-    require_once("components/nav.php");
+  <?php 
+      $current_page = "cocktail-details";
+      require_once("components/nav.php");
     ?>
 
 
@@ -96,6 +97,9 @@ incrementCocktailUsageCount($pdo, intval($_GET["id"]));
 
             echo "</div>";
           ?>
+          <div class="d-flex justify-content-center mt-4">
+            <a href='/cocktail-update.php?id=<?php echo $_GET["id"] ?>' class="btn btn-primary btn-lg">Edit</a>
+          </div>
         </div>
       </div>
     </div>
