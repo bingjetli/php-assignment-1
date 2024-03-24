@@ -7,10 +7,11 @@
 require_once(".dbenv.php");
 
 
-function getNewPDOInstance():PDO {
+function getNewPDOInstance(): PDO
+{
   $host = DB_HOST;
   $user = DB_USER;
-  $pass = DB_PASS; 
+  $pass = DB_PASS;
   $db = DB_NAME;
 
   //Specifies how the data is encoded during the process of sending or receiving
@@ -55,7 +56,8 @@ function getNewPDOInstance():PDO {
 }
 
 
-function sendPreparedSQL($pdo_instance, $sql_statement, $args=null):PDOStatement {
+function sendPreparedSQL($pdo_instance, $sql_statement, $args = null): PDOStatement
+{
 
   //Apparently, `mysqli_real_escape_string()` just escapes special characters in
   //the SQL string and the SQL Injection mitigation effect is a side-effect. The
@@ -69,9 +71,10 @@ function sendPreparedSQL($pdo_instance, $sql_statement, $args=null):PDOStatement
 }
 
 
-function addNewIngredient(PDO $pdo, string $name, string $category):void {
-  $sql = "INSERT INTO tbl_ingredients (name, category) ".
-         "VALUES (?, ?)";
+function addNewIngredient(PDO $pdo, string $name, string $category): void
+{
+  $sql = "INSERT INTO tbl_ingredients (name, category) " .
+    "VALUES (?, ?)";
   $args = [
     $name,
     $category
@@ -93,9 +96,10 @@ function addNewIngredient(PDO $pdo, string $name, string $category):void {
 }
 
 
-function addNewCocktail(PDO $pdo, string $name, string $notes=""):void {
-  $sql = "INSERT INTO tbl_cocktails (name, notes) ".
-         "VALUES (?, ?)";
+function addNewCocktail(PDO $pdo, string $name, string $notes = ""): void
+{
+  $sql = "INSERT INTO tbl_cocktails (name, notes) " .
+    "VALUES (?, ?)";
   $args = [
     $name,
     $notes,
@@ -110,9 +114,10 @@ function addNewCocktail(PDO $pdo, string $name, string $notes=""):void {
 
 
 
-function addIngredientToCocktail(PDO $pdo, string $cocktail_id, string $ingredient_id, int $fraction):void {
-  $sql = "INSERT INTO tbl_cocktail_ingredients (cocktail_id, ingredient_id, fraction) ".
-         "VALUES (?, ?, ?)";
+function addIngredientToCocktail(PDO $pdo, string $cocktail_id, string $ingredient_id, int $fraction): void
+{
+  $sql = "INSERT INTO tbl_cocktail_ingredients (cocktail_id, ingredient_id, fraction) " .
+    "VALUES (?, ?, ?)";
   $args = [
     $cocktail_id,
     $ingredient_id,
@@ -127,11 +132,12 @@ function addIngredientToCocktail(PDO $pdo, string $cocktail_id, string $ingredie
 }
 
 
-function incrementCocktailUsageCount(PDO $pdo, int $cocktail_id):void {
-  $sql = "UPDATE tbl_cocktails ".
-         "SET times_used = times_used + 1, ".
-         "last_used = CURRENT_TIMESTAMP ".
-         "WHERE cocktail_id = ?";
+function incrementCocktailUsageCount(PDO $pdo, int $cocktail_id): void
+{
+  $sql = "UPDATE tbl_cocktails " .
+    "SET times_used = times_used + 1, " .
+    "last_used = CURRENT_TIMESTAMP " .
+    "WHERE cocktail_id = ?";
   $args = [
     $cocktail_id,
   ];
@@ -144,10 +150,11 @@ function incrementCocktailUsageCount(PDO $pdo, int $cocktail_id):void {
 }
 
 
-function getIngredients(PDO $pdo, string $category = null):PDOStatement {
+function getIngredients(PDO $pdo, string $category = null): PDOStatement
+{
 
   //First check if the category filters were defined.
-  if($category === null){
+  if ($category === null) {
 
     //Since there is no category filtering specified, we can run a simple
     //query to the database and return the PDO Statement.
@@ -162,17 +169,70 @@ function getIngredients(PDO $pdo, string $category = null):PDOStatement {
 }
 
 
-function getAllIngredientCategories(PDO $pdo):PDOStatement {
-  $sql = "SELECT category ".
-         "FROM tbl_ingredients ".
-         "GROUP BY category";
+//Sarah's Update Ingredient Page Functions (1)
+function getIngredientDetailsById(PDO $pdo, int $id): PDOStatement
+{
+  $sql = "SELECT * FROM tbl_ingredients WHERE ingredient_id = ?";
+  $stmt = sendPreparedSQL($pdo, $sql, [$id]);
+
+  return $stmt;
+}
+
+
+//Sarah's Update Ingredient Page Functions (2)
+function updateIngredientDetails(PDO $pdo, int $id, string $name, string $category): void
+{
+  $sql = "UPDATE tbl_ingredients SET name = ?, category = ? WHERE ingredient_id = ?";
+  $args = [
+    $name,
+    $category,
+    $id
+  ];
+  $statement = sendPreparedSQL($pdo, $sql, $args);
+
+  $statement->closeCursor();
+}
+
+
+//Sarah's Update Ingredient Page DELETE Function
+function deleteIngredient(PDO $pdo, int $ingredientId): void
+{
+  $sql = "DELETE FROM tbl_ingredients WHERE ingredient_id = ?";
+  sendPreparedSQL($pdo, $sql, [$ingredientId]);
+}
+
+
+//Sarah's Search Function
+function searchIngredientsByName(PDO $pdo, string $searchQuery): PDOStatement
+{
+  $sql = "SELECT * FROM tbl_ingredients WHERE name LIKE :searchQuery";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(['searchQuery' => "%" . $searchQuery . "%"]);
+  return $stmt;
+}
+
+
+//Sarah's index.php get recent ingredients function
+function getMostRecentIngredients(PDO $pdo, int $max_result = 10): PDOStatement
+{
+  $sql = "SELECT * FROM tbl_ingredients ORDER BY last_used DESC LIMIT ?";
+  return sendPreparedSQL($pdo, $sql, [$max_result]);
+}
+
+
+function getAllIngredientCategories(PDO $pdo): PDOStatement
+{
+  $sql = "SELECT category " .
+    "FROM tbl_ingredients " .
+    "GROUP BY category";
 
 
   return $pdo->query($sql);
 }
 
 
-function getCocktailById(PDO $pdo, int $id):PDOStatement {
+function getCocktailById(PDO $pdo, int $id): PDOStatement
+{
   $sql = "SELECT * FROM tbl_cocktails WHERE cocktail_id = ?";
 
 
@@ -180,21 +240,23 @@ function getCocktailById(PDO $pdo, int $id):PDOStatement {
 }
 
 
-function getCocktailIngredients(PDO $pdo, int $id):PDOStatement {
-  $sql = "SELECT * ".
-         "FROM tbl_cocktail_ingredients ".
-         "INNER JOIN tbl_ingredients ON tbl_cocktail_ingredients.ingredient_id=tbl_ingredients.ingredient_id ".
-         "WHERE tbl_cocktail_ingredients.cocktail_id = ?";
+function getCocktailIngredients(PDO $pdo, int $id): PDOStatement
+{
+  $sql = "SELECT * " .
+    "FROM tbl_cocktail_ingredients " .
+    "INNER JOIN tbl_ingredients ON tbl_cocktail_ingredients.ingredient_id=tbl_ingredients.ingredient_id " .
+    "WHERE tbl_cocktail_ingredients.cocktail_id = ?";
 
   return sendPreparedSQL($pdo, $sql, [$id]);
 }
 
 
-function getMostRecentCocktails(PDO $pdo, int $max_result = 10):PDOStatement {
-  $sql = "SELECT * ".
-         "FROM tbl_cocktails ".
-         "ORDER BY last_used DESC ".
-         "LIMIT ?";
+function getMostRecentCocktails(PDO $pdo, int $max_result = 10): PDOStatement
+{
+  $sql = "SELECT * " .
+    "FROM tbl_cocktails " .
+    "ORDER BY last_used DESC " .
+    "LIMIT ?";
 
 
   return sendPreparedSQL($pdo, $sql, [$max_result]);
@@ -202,11 +264,12 @@ function getMostRecentCocktails(PDO $pdo, int $max_result = 10):PDOStatement {
 
 
 
-function getMostCommonCocktails(PDO $pdo, int $max_result = 10):PDOStatement {
-  $sql = "SELECT * ".
-         "FROM tbl_cocktails ".
-         "ORDER BY times_used DESC ".
-         "LIMIT ?";
+function getMostCommonCocktails(PDO $pdo, int $max_result = 10): PDOStatement
+{
+  $sql = "SELECT * " .
+    "FROM tbl_cocktails " .
+    "ORDER BY times_used DESC " .
+    "LIMIT ?";
 
 
   return sendPreparedSQL($pdo, $sql, [$max_result]);
@@ -214,42 +277,42 @@ function getMostCommonCocktails(PDO $pdo, int $max_result = 10):PDOStatement {
 
 
 function incrementallySearchByIngredients(
-  PDO $pdo, 
+  PDO $pdo,
   array $ingredient_ids,
   int $max_result = 10,
-):PDOStatement {
+): PDOStatement {
 
   //First, generate the placeholder list for the prepared statement.
-  $placeholder_list = implode(", ", array_map(fn($i):string => '?', $ingredient_ids));
+  $placeholder_list = implode(", ", array_map(fn ($i): string => '?', $ingredient_ids));
 
 
-  $sql = "SELECT COUNT(*) AS matched, tbl_cocktails.cocktail_id, tbl_cocktails.name ".
-         "FROM tbl_cocktail_ingredients ".
-         "INNER JOIN tbl_cocktails ON tbl_cocktail_ingredients.cocktail_id=tbl_cocktails.cocktail_id ".
-         "WHERE ingredient_id IN ($placeholder_list) ".
-         "GROUP BY tbl_cocktail_ingredients.cocktail_id ".
-         "LIMIT ?";
+  $sql = "SELECT COUNT(*) AS matched, tbl_cocktails.cocktail_id, tbl_cocktails.name " .
+    "FROM tbl_cocktail_ingredients " .
+    "INNER JOIN tbl_cocktails ON tbl_cocktail_ingredients.cocktail_id=tbl_cocktails.cocktail_id " .
+    "WHERE ingredient_id IN ($placeholder_list) " .
+    "GROUP BY tbl_cocktail_ingredients.cocktail_id " .
+    "LIMIT ?";
 
 
   return sendPreparedSQL($pdo, $sql, [...$ingredient_ids, $max_result]);
 }
 
 
-function generateIngredientCategoryMap(PDOStatement $ingredients_stmt):array {
+function generateIngredientCategoryMap(PDOStatement $ingredients_stmt): array
+{
   $map = array();
 
-  foreach($ingredients_stmt as $i){
+  foreach ($ingredients_stmt as $i) {
     $category = $i["category"];
 
 
     //First check if the map has this key already.
-    if(isset($map[$category]) == true){
+    if (isset($map[$category]) == true) {
 
       //this category is already defined in the map. So we can just append the
       //value into the array.
       $map[$category][] = $i;
-    }
-    else {
+    } else {
 
       //This category hasn't been defined in the map as yet, so we'll create a
       //new array with the value initialized in it.
@@ -259,6 +322,3 @@ function generateIngredientCategoryMap(PDOStatement $ingredients_stmt):array {
 
   return $map;
 }
-
-
-?>

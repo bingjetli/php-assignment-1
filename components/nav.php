@@ -9,26 +9,32 @@
         <ul class="navbar-nav">
           <li class="nav-item">
             <?php
-              $is_active = $current_page === "home" ? " active" : "";
-              echo "<a class='nav-link$is_active' href='/'>Home</a>";
+            $is_active = $current_page === "home" ? " active" : "";
+            echo "<a class='nav-link$is_active' href='/'>Home</a>";
             ?>
           </li>
           <li class="nav-item">
             <?php
-              $is_active = $current_page === "create-cocktail" ? " active" : "";
-              echo "<a class='nav-link$is_active' href='/create-cocktail.php'>Create Cocktail</a>";
+            $is_active = $current_page === "create-cocktail" ? " active" : "";
+            echo "<a class='nav-link$is_active' href='/create-cocktail.php'>Create Cocktail</a>";
             ?>
           </li>
           <li class="nav-item">
             <?php
-              $is_active = $current_page === "create-ingredient" ? " active" : "";
-              echo "<a class='nav-link$is_active' href='/create-ingredient.php'>Create Ingredient</a>";
+            $is_active = $current_page === "create-ingredient" ? " active" : "";
+            echo "<a class='nav-link$is_active' href='/create-ingredient.php'>Create Ingredient</a>";
             ?>
           </li>
           <li class="nav-item">
             <?php
-              $is_active = $current_page === "about" ? " active" : "";
-              echo "<a class='nav-link$is_active' href='/about.php'>About</a>";
+            $is_active = $current_page === "list-ingredients" ? " active" : "";
+            echo "<a class='nav-link$is_active' href='/list-ingredients.php'>List Ingredients</a>";
+            ?>
+          </li>
+          <li class="nav-item">
+            <?php
+            $is_active = $current_page === "about" ? " active" : "";
+            echo "<a class='nav-link$is_active' href='/about.php'>About</a>";
             ?>
           </li>
         </ul>
