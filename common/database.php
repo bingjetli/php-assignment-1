@@ -51,7 +51,6 @@ function getNewPDOInstance(): PDO
 
   $pdo_instance = new PDO($data_source_name, $user, $pass, $options);
 
-
   return $pdo_instance;
 }
 
@@ -65,7 +64,6 @@ function sendPreparedSQL($pdo_instance, $sql_statement, $args = null): PDOStatem
   //src: https://phpdelusions.net/top
   $prepared_statement = $pdo_instance->prepare($sql_statement);
   $prepared_statement->execute($args);
-
 
   return $prepared_statement;
 }
@@ -98,8 +96,8 @@ function addNewIngredient(PDO $pdo, string $name, string $category): void
 
 function addNewCocktail(PDO $pdo, string $name, string $notes = ""): void
 {
-  $sql = "INSERT INTO tbl_cocktails (name, notes) " .
-    "VALUES (?, ?)";
+  $sql = "INSERT INTO tbl_cocktails (name, notes, times_used) " .
+    "VALUES (?, ?, 0)";
   $args = [
     $name,
     $notes,
@@ -406,6 +404,49 @@ function auditPDO(callable $db_function, ...$args)
   {
     echo "Exception Occured : " . $pdoe->getMessage() . "\n -- $args";
   }
+}
+
+function updateCocktail(PDO $pdo, int $cocktail_id, string $name, string $notes = ""): void
+{
+  $sql = "UPDATE tbl_cocktails SET name = ?, notes = ? WHERE cocktail_id = ?";
+  $args = [
+    $name,
+    $notes, 
+    $cocktail_id
+  ];
+  $statement = sendPreparedSQL($pdo, $sql, $args);
+
+  //Close the connection to the server from this cursor allowing other SQL
+  //statements to be executed, but leaves the statement in a state where it
+  //can be executed again.
+  $statement->closeCursor();
+}
+
+function updateIngredientToCocktail(PDO $pdo, string $cocktail_id, string $ingredient_id, int $fraction): void
+{
+  $sql = "UPDATE tbl_cocktail_ingredients SET fraction = ? WHERE cocktail_id = ? AND ingredient_id  = ?";
+  $args = [
+    $fraction,
+    $cocktail_id,
+    $ingredient_id
+  ];
+  $statement = sendPreparedSQL($pdo, $sql, $args);
+
+  //Close the connection to the server from this cursor allowing other SQL
+  //statements to be executed, but leaves the statement in a state where it
+  //can be executed again.
+  $statement->closeCursor();
+}
+
+function deleteCocktail(PDO $pdo, int $cocktail_id): void
+{
+  $sql = "DELETE FROM tbl_cocktails WHERE cocktail_id = ?";
+  $args = [
+    $cocktail_id
+  ];
+  $statement = sendPreparedSQL($pdo, $sql, $args);
+
+  $statement->closeCursor();
 }
 
 ?>
