@@ -96,8 +96,8 @@ function addNewIngredient(PDO $pdo, string $name, string $category): void
 
 function addNewCocktail(PDO $pdo, string $name, string $notes = ""): void
 {
-  $sql = "INSERT INTO tbl_cocktails (name, notes, times_used) " .
-    "VALUES (?, ?, 0)";
+  $sql = "INSERT INTO tbl_cocktails (name, notes) " .
+    "VALUES (?, ?)";
   $args = [
     $name,
     $notes,
@@ -152,8 +152,7 @@ function getIngredients(PDO $pdo, string $category = null): PDOStatement
 {
 
   //First check if the category filters were defined.
-  if ($category === null)
-  {
+  if ($category === null) {
 
     //Since there is no category filtering specified, we can run a simple
     //query to the database and return the PDO Statement.
@@ -166,6 +165,58 @@ function getIngredients(PDO $pdo, string $category = null): PDOStatement
   $sql = "SELECT * FROM tbl_ingredients WHERE category = ?";
   return sendPreparedSQL($pdo, $sql, [$category]);
 }
+
+
+//Sarah's Update Ingredient Page Functions (1)
+function getIngredientDetailsById(PDO $pdo, int $id): PDOStatement
+{
+  $sql = "SELECT * FROM tbl_ingredients WHERE ingredient_id = ?";
+  $stmt = sendPreparedSQL($pdo, $sql, [$id]);
+
+  return $stmt;
+}
+
+
+//Sarah's Update Ingredient Page Functions (2)
+function updateIngredientDetails(PDO $pdo, int $id, string $name, string $category): void
+{
+  $sql = "UPDATE tbl_ingredients SET name = ?, category = ? WHERE ingredient_id = ?";
+  $args = [
+    $name,
+    $category,
+    $id
+  ];
+  $statement = sendPreparedSQL($pdo, $sql, $args);
+
+  $statement->closeCursor();
+}
+
+
+//Sarah's Update Ingredient Page DELETE Function
+function deleteIngredient(PDO $pdo, int $ingredientId): void
+{
+  $sql = "DELETE FROM tbl_ingredients WHERE ingredient_id = ?";
+  sendPreparedSQL($pdo, $sql, [$ingredientId]);
+}
+
+
+//Sarah's Search Function
+function searchIngredientsByName(PDO $pdo, string $searchQuery): PDOStatement
+{
+  $sql = "SELECT * FROM tbl_ingredients WHERE name LIKE :searchQuery";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(['searchQuery' => "%" . $searchQuery . "%"]);
+  return $stmt;
+}
+
+
+//Sarah's index.php get recent ingredients function
+function getMostRecentIngredients(PDO $pdo, int $max_result = 10): PDOStatement
+{
+  $sql = "SELECT * FROM tbl_ingredients ORDER BY last_used DESC LIMIT ?";
+  return sendPreparedSQL($pdo, $sql, [$max_result]);
+}
+
 
 
 function getAllIngredientCategories(PDO $pdo): PDOStatement
@@ -360,19 +411,16 @@ function setUserSessionToken(PDO $pdo, int $user_id, string $session_token): voi
 }
 
 
-
 function generateIngredientCategoryMap(PDOStatement $ingredients_stmt): array
 {
   $map = array();
 
-  foreach ($ingredients_stmt as $i)
-  {
+  foreach ($ingredients_stmt as $i) {
     $category = $i["category"];
 
 
     //First check if the map has this key already.
-    if (isset ($map[$category]) == true)
-    {
+    if (isset($map[$category]) == true) {
 
       //this category is already defined in the map. So we can just append the
       //value into the array.
@@ -389,6 +437,7 @@ function generateIngredientCategoryMap(PDOStatement $ingredients_stmt): array
 
   return $map;
 }
+
 
 
 # Doesn't work, TO-SELF: Fix this function at some point...

@@ -42,6 +42,12 @@ if (isset ($_SESSION["user-token"]))
           </li>
           <li class="nav-item">
             <?php
+            $is_active = $current_page === "list-ingredients" ? " active" : "";
+            echo "<a class='nav-link$is_active' href='/list-ingredients.php'>List Ingredients</a>";
+            ?>
+          </li>
+          <li class="nav-item">
+            <?php
             $is_active = $current_page === "about" ? " active" : "";
             echo "<a class='nav-link$is_active' href='/about.php'>About</a>";
             ?>

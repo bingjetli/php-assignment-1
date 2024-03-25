@@ -6,6 +6,8 @@ $pdo = getNewPDOInstance();
 
 $recent_cocktails_stmt = getMostRecentCocktails($pdo);
 $common_cocktails_stmt = getMostCommonCocktails($pdo);
+//Sarah's 'most recent ingredients'
+$recent_ingredients_stmt = getMostRecentIngredients($pdo); //fix this!!!
 
 
 //Get the ingredients list.
@@ -82,24 +84,33 @@ $ingredient_category_map = generateIngredientCategoryMap($ingredients);
         <?php
         echo "<div class='accordion mt-3' id='ingredients-accordion'>";
 
+        //Sarah's Most Recent Ingredient header
+        echo "<div class='accordion-item'>";
+        echo   "<h2 class='accordion-header'>" .
+          "<button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapseMostRecent' aria-expanded='true' aria-controls='collapseMostRecent'>" .
+          "Most Recent Ingredients" .
+          "</button>" .
+          "</h2>";
+        echo "<div id='collapseMostRecent' class='accordion-collapse collapse' aria-labelledby='headingMostRecent' data-bs-parent='#ingredients-accordion'>";
+        echo "<div class='accordion-body'>";
+
+        //Sarah's iteration through Most Recent Ingredient category.
+        foreach ($recent_ingredients_stmt as $i) {
+
+          $i_name = ($i["name"]);
+          $ingredient_id = ($i["ingredient_id"]);
+
+          echo     "<input type='checkbox' class='btn-check' id='recent-$ingredient_id-checkbox' form='search-by-ingredients-form' name='withIngredients[]' value='$ingredient_id' onchange='this.form.submit()'>";
+          echo     "<label for='recent-$ingredient_id-checkbox' class='btn btn-outline-secondary mx-1 my-1'>
+            $i_name
+            </label>";
+        }
 
 
-        foreach ($ingredient_category_map as $c => $v)
-        {
+        echo     "</div>" .
+          "</div>";
 
-          //First draw the header.
-          echo "<div class='accordion-item'>";
-          echo "<h2 class='accordion-header'>" .
-            "<button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#$c-accordion-body'>" .
-            "$c" .
-            "</button>" .
-            "</h2>";
-
-
-          //Then draw the accordion body.
-          echo "<div id='$c-accordion-body' class='accordion-collapse collapse' data-bs-parent='#ingredients-accordion'>" .
-            "<div class='accordion-body'>";
-
+        echo "</div>";
 
           //Iterate through each of the ingredients in the specified category.
           foreach ($v as $i)
@@ -107,8 +118,29 @@ $ingredient_category_map = generateIngredientCategoryMap($ingredients);
             $i_name = $i["name"];
             $ingredient_id = $i["ingredient_id"];
 
-            echo "<input type='checkbox' class='btn-check' id='$i_name-checkbox' form='search-by-ingredients-form' name='withIngredients[]' value='$ingredient_id' onchange='this.form.submit()'>";
-            echo "<label for='$i_name-checkbox' class='btn btn-outline-secondary mx-1 my-1'>" .
+
+        foreach ($ingredient_category_map as $c => $v) {
+
+          //First draw the header.
+          echo "<div class='accordion-item'>";
+          echo   "<h2 class='accordion-header'>" .
+            "<button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#$c-accordion-body'>" .
+            "$c" .
+            "</button>" .
+            "</h2>";
+
+          //Then draw the accordion body.
+          echo   "<div id='$c-accordion-body' class='accordion-collapse collapse' data-bs-parent='#ingredients-accordion'>" .
+            "<div class='accordion-body'>";
+
+
+          //Iterate through each of the ingredients in the specified category.
+          foreach ($v as $i) {
+            $i_name = $i["name"];
+            $ingredient_id = $i["ingredient_id"];
+
+            echo     "<input type='checkbox' class='btn-check' id='$i_name-checkbox' form='search-by-ingredients-form' name='withIngredients[]' value='$ingredient_id' onchange='this.form.submit()'>";
+            echo     "<label for='$i_name-checkbox' class='btn btn-outline-secondary mx-1 my-1'>" .
               "<!--" .
               "<img src='https://placehold.co/100' alt='$i_name-image'>" .
               "<p class='fw-bold text-uppercase'>$i_name</p>" .
@@ -118,11 +150,10 @@ $ingredient_category_map = generateIngredientCategoryMap($ingredients);
           }
 
 
-          echo "</div>" .
+          echo     "</div>" .
             "</div>";
 
           echo "</div>";
-
         }
 
         echo "</div>";
