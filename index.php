@@ -1,5 +1,6 @@
 <?php
-require_once("common/database.php");
+session_start();
+require_once ("common/database.php");
 $pdo = getNewPDOInstance();
 
 
@@ -18,9 +19,11 @@ $ingredient_category_map = generateIngredientCategoryMap($ingredients);
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=320, height=device-height, target-densitydpi=medium-dpi">
+  <meta name="viewport"
+    content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=320, height=device-height, target-densitydpi=medium-dpi">
   <title>Lorsque | Homepage</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link href="css/style.css" rel="stylesheet">
 </head>
 
@@ -28,7 +31,7 @@ $ingredient_category_map = generateIngredientCategoryMap($ingredients);
 
   <?php
   $current_page = "home";
-  require_once("components/nav.php");
+  require_once ("components/nav.php");
   ?>
 
   <div class="container">
@@ -38,7 +41,8 @@ $ingredient_category_map = generateIngredientCategoryMap($ingredients);
           <h2 class="display-6 text-muted">Recently Viewed</h2>
           <div>
             <?php
-            foreach ($recent_cocktails_stmt as $c) {
+            foreach ($recent_cocktails_stmt as $c)
+            {
               $c_name = $c["name"];
               $c_id = $c["cocktail_id"];
 
@@ -55,7 +59,8 @@ $ingredient_category_map = generateIngredientCategoryMap($ingredients);
           <h2 class="display-6 text-muted">Frequently Viewed</h2>
           <div>
             <?php
-            foreach ($common_cocktails_stmt as $c) {
+            foreach ($common_cocktails_stmt as $c)
+            {
               $c_name = $c["name"];
               $c_id = $c["cocktail_id"];
 
@@ -106,6 +111,12 @@ $ingredient_category_map = generateIngredientCategoryMap($ingredients);
           "</div>";
 
         echo "</div>";
+
+          //Iterate through each of the ingredients in the specified category.
+          foreach ($v as $i)
+          {
+            $i_name = $i["name"];
+            $ingredient_id = $i["ingredient_id"];
 
 
         foreach ($ingredient_category_map as $c => $v) {
@@ -166,10 +177,12 @@ $ingredient_category_map = generateIngredientCategoryMap($ingredients);
   </div>
 
   <?php
-  require_once("components/footer.php");
+  require_once ("components/footer.php");
   ?>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>

@@ -4,7 +4,7 @@
 //src : https://phpdelusions.net/pdo
 //---
 
-require_once(".dbenv.php");
+require_once (".dbenv.php");
 
 
 function getNewPDOInstance(): PDO
@@ -51,7 +51,6 @@ function getNewPDOInstance(): PDO
 
   $pdo_instance = new PDO($data_source_name, $user, $pass, $options);
 
-
   return $pdo_instance;
 }
 
@@ -65,7 +64,6 @@ function sendPreparedSQL($pdo_instance, $sql_statement, $args = null): PDOStatem
   //src: https://phpdelusions.net/top
   $prepared_statement = $pdo_instance->prepare($sql_statement);
   $prepared_statement->execute($args);
-
 
   return $prepared_statement;
 }
@@ -220,6 +218,7 @@ function getMostRecentIngredients(PDO $pdo, int $max_result = 10): PDOStatement
 }
 
 
+
 function getAllIngredientCategories(PDO $pdo): PDOStatement
 {
   $sql = "SELECT category " .
@@ -283,7 +282,7 @@ function incrementallySearchByIngredients(
 ): PDOStatement {
 
   //First, generate the placeholder list for the prepared statement.
-  $placeholder_list = implode(", ", array_map(fn ($i): string => '?', $ingredient_ids));
+  $placeholder_list = implode(", ", array_map(fn($i): string => '?', $ingredient_ids));
 
 
   $sql = "SELECT COUNT(*) AS matched, tbl_cocktails.cocktail_id, tbl_cocktails.name " .
@@ -295,6 +294,120 @@ function incrementallySearchByIngredients(
 
 
   return sendPreparedSQL($pdo, $sql, [...$ingredient_ids, $max_result]);
+}
+
+
+function isUsernameUnique(PDO $pdo, string $username): bool
+{
+  $sql = "SELECT * FROM tbl_users WHERE user_name = ?";
+
+  $result = sendPreparedSQL($pdo, $sql, [$username]);
+
+
+  //Check if the SQL had any results, if it failed or returned no results,
+  //the value of this variable will be false, and we'll know that the username 
+  //is unique. Otherwise, if there were results, then the value will not be false
+  //and we'll know that the username is not unique.
+  return $result->fetch() == false ? true : false;
+}
+
+
+function isDisplayNameUnique(PDO $pdo, string $display_name): bool
+{
+  $sql = "SELECT * FROM tbl_users WHERE display_name = ?";
+
+  $result = sendPreparedSQL($pdo, $sql, [$display_name]);
+
+
+  return $result->fetch() == false ? true : false;
+}
+
+
+function createNewUser(
+  PDO $pdo,
+  string $username,
+  string $display_name,
+  string $password,
+  string $session_token
+): void {
+  $sql = "INSERT INTO tbl_users (user_name, display_name, password, session_token) " .
+    "VALUES (?, ?, ?, ?)";
+
+
+  $args = [
+    $username,
+    $display_name,
+    $password,
+    $session_token,
+  ];
+
+
+  $statement = sendPreparedSQL($pdo, $sql, $args);
+
+
+  //Close the connection to the server from this cursor allowing other SQL
+  //statements to be executed, but leaves the statement in a state where it
+  //can be executed again.
+  $statement->closeCursor();
+}
+
+
+
+function loginUser(PDO $pdo, string $username, string $password): bool|array
+{
+  $sql = "SELECT * FROM tbl_users WHERE user_name = ?";
+  $result = sendPreparedSQL($pdo, $sql, [$username])->fetch();
+
+  if ($result != false)
+  {
+
+    //If there was a user with this username in the database. Then try
+    //to verify the password against the hashed password stored in the
+    //database.
+    $is_verified_user = password_verify($password, $result["password"]);
+    if ($is_verified_user == true)
+    {
+
+      //If the password matches the hashed password, then return the 
+      //userdata.
+      return $result;
+    }
+    else
+    {
+
+      //Otherwise return false
+      return false;
+    }
+  }
+
+  //Return false by default, this indicates that we didn't find the user
+  //inside the database.
+  return false;
+}
+
+
+function fetchUserDetailsFromToken(PDO $pdo, string $session_token): bool|array
+{
+  $sql = "SELECT * FROM tbl_users WHERE session_token = ?";
+  return sendPreparedSQL($pdo, $sql, [$session_token])->fetch();
+}
+
+
+function setUserSessionToken(PDO $pdo, int $user_id, string $session_token): void
+{
+  $sql = "UPDATE tbl_users " .
+    "SET session_token = ? " .
+    "WHERE user_id = ?";
+
+
+  $args = [
+    $session_token,
+    $user_id,
+  ];
+
+
+  $statement = sendPreparedSQL($pdo, $sql, $args);
+  $statement->closeCursor();
 }
 
 
@@ -312,7 +425,9 @@ function generateIngredientCategoryMap(PDOStatement $ingredients_stmt): array
       //this category is already defined in the map. So we can just append the
       //value into the array.
       $map[$category][] = $i;
-    } else {
+    }
+    else
+    {
 
       //This category hasn't been defined in the map as yet, so we'll create a
       //new array with the value initialized in it.
@@ -322,3 +437,65 @@ function generateIngredientCategoryMap(PDOStatement $ingredients_stmt): array
 
   return $map;
 }
+
+
+
+# Doesn't work, TO-SELF: Fix this function at some point...
+function auditPDO(callable $db_function, ...$args)
+{
+  echo "Auditing $db_function";
+
+  try
+  {
+    $db_function(...$args);
+  }
+  catch (PDOException $pdoe)
+  {
+    echo "Exception Occured : " . $pdoe->getMessage() . "\n -- $args";
+  }
+}
+
+function updateCocktail(PDO $pdo, int $cocktail_id, string $name, string $notes = ""): void
+{
+  $sql = "UPDATE tbl_cocktails SET name = ?, notes = ? WHERE cocktail_id = ?";
+  $args = [
+    $name,
+    $notes, 
+    $cocktail_id
+  ];
+  $statement = sendPreparedSQL($pdo, $sql, $args);
+
+  //Close the connection to the server from this cursor allowing other SQL
+  //statements to be executed, but leaves the statement in a state where it
+  //can be executed again.
+  $statement->closeCursor();
+}
+
+function updateIngredientToCocktail(PDO $pdo, string $cocktail_id, string $ingredient_id, int $fraction): void
+{
+  $sql = "UPDATE tbl_cocktail_ingredients SET fraction = ? WHERE cocktail_id = ? AND ingredient_id  = ?";
+  $args = [
+    $fraction,
+    $cocktail_id,
+    $ingredient_id
+  ];
+  $statement = sendPreparedSQL($pdo, $sql, $args);
+
+  //Close the connection to the server from this cursor allowing other SQL
+  //statements to be executed, but leaves the statement in a state where it
+  //can be executed again.
+  $statement->closeCursor();
+}
+
+function deleteCocktail(PDO $pdo, int $cocktail_id): void
+{
+  $sql = "DELETE FROM tbl_cocktails WHERE cocktail_id = ?";
+  $args = [
+    $cocktail_id
+  ];
+  $statement = sendPreparedSQL($pdo, $sql, $args);
+
+  $statement->closeCursor();
+}
+
+?>
