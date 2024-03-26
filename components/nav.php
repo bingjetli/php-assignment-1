@@ -1,13 +1,19 @@
 <?php
 $user = null;
 
-if (isset ($_SESSION["user-token"]))
-{
+if (isset ($current_page) == false) {
+  $current_page = "undefined-page";
+}
+
+
+if (isset ($_SESSION["user-token"])) {
 
   //If there is a user token session variable specified, then let's 
   //try to retreive the user data for this session token.
-  require_once ("common/database.php");
-  $user = fetchUserDetailsFromToken(isset ($pdo) == false ? getNewPDOInstance() : $pdo, $_SESSION["user-token"]);
+  if (isset ($user) == false) {
+    require_once ("common/database.php");
+    $user = fetchUserDetailsFromToken(isset ($pdo) == false ? getNewPDOInstance() : $pdo, $_SESSION["user-token"]);
+  }
 }
 ?>
 
@@ -28,36 +34,41 @@ if (isset ($_SESSION["user-token"]))
             echo "<a class='nav-link$is_active' href='/'>Home</a>";
             ?>
           </li>
-          <li class="nav-item">
-            <?php
-            $is_active = $current_page === "create-cocktail" ? " active" : "";
-            echo "<a class='nav-link$is_active' href='/create-cocktail.php'>Create Cocktail</a>";
-            ?>
-          </li>
-          <li class="nav-item">
-            <?php
-            $is_active = $current_page === "create-ingredient" ? " active" : "";
-            echo "<a class='nav-link$is_active' href='/create-ingredient.php'>Create Ingredient</a>";
-            ?>
-          </li>
-          <li class="nav-item">
-            <?php
-            $is_active = $current_page === "list-ingredients" ? " active" : "";
-            echo "<a class='nav-link$is_active' href='/list-ingredients.php'>List Ingredients</a>";
-            ?>
-          </li>
+
           <li class="nav-item">
             <?php
             $is_active = $current_page === "about" ? " active" : "";
             echo "<a class='nav-link$is_active' href='/about.php'>About</a>";
             ?>
           </li>
+
+          <?php
+          if ($user != false && $user != null) {
+
+            //If a user is currently logged in, let's check if they
+            //are an administrator.
+            if ($user["is_admin"] == true) {
+              echo <<<EOT
+                <li class="nav-item dropdown">
+                  <a id="admin-links-dropdown-button" class="nav-link dropdown-toggle" href="#" role="button" aria-expanded="false" data-bs-toggle="dropdown">
+                    Settings
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="admin-links-dropdown-button">
+                    <li><a class="dropdown-item" href="/create-cocktail.php">Create Cocktail</a></li>
+                    <li><a class="dropdown-item" href="/list-cocktails.php">List Cocktails</a></li>
+                    <li><a class="dropdown-item" href="/create-ingredient.php">Create Ingredient</a></li>
+                    <li><a class="dropdown-item" href="/list-ingredients.php">List Ingredients</a></li>
+                  </ul>
+                </li>
+              EOT;
+            }
+          }
+          ?>
         </ul>
       </div>
       <?php
 
-      if ($user != false && $user != null)
-      {
+      if ($user != false && $user != null) {
 
         //If the session token is valid, and there's user data associated
         //with the session token, then instead of showing the login/register
@@ -71,9 +82,7 @@ if (isset ($_SESSION["user-token"]))
             <a class="btn btn-secondary-outline" href="/logout.php">Log out</a>
           </div>
         EOT;
-      }
-      else
-      {
+      } else {
 
         //Otherwise, display the login and register button as usual.
         echo <<<EOT

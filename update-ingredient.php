@@ -1,10 +1,36 @@
 <?php
+//Initialize the session so that the navbar can access the session details.
+session_start();
+require_once ("common/utils.php");
+require_once ("common/database.php");
+$pdo = getNewPDOInstance();
+
+
+//Since this is an admin page, we need to verify that only admins can
+//access this page.
+if (isset ($_SESSION["user-token"]) == false) {
+
+  //If there is no user-token, this means that there is no user logged in
+  //which also means that the user is definitely not an administrator.
+  //So we redirect them back to the main page.
+  redirectToURL("/");
+}
+
+
+//Next, try to fetch the user details from the token variable.
+$user = fetchUserDetailsFromToken($pdo, $_SESSION["user-token"]);
+
+
+//Then check if the user is an administrator.
+if ($user["is_admin"] == false) {
+
+  //The user is not an administrator, so we'll redirect them back to the
+  //main page.
+  redirectToURL("/");
+}
 
 //Import the database.php script, create the PDO instance for the entire page, check if the form has been submitted to update an ingredient?
-if (isset($_POST["updateIngredientFlag"]) == true) {
-  require_once("common/database.php");
-  $pdo = getNewPDOInstance();
-
+if (isset ($_POST["updateIngredientFlag"]) == true) {
   $ingredientId = $_POST["ingredientId"];
 
   // Function to update ingredient details in the database
@@ -15,26 +41,26 @@ if (isset($_POST["updateIngredientFlag"]) == true) {
     $_POST["ingredientCategory"]
   );
 
-  require_once("common/utils.php");
+  require_once ("common/utils.php");
   redirectToURL("/"); // Redirect back to ??? after updating, stops script execution so the database connection will close?
 }
 
 // Check if delete button is clicked
-if (isset($_POST["deleteIngredientFlag"]) == true) {
-  require_once("common/database.php");
+if (isset ($_POST["deleteIngredientFlag"]) == true) {
+  require_once ("common/database.php");
   $pdo = getNewPDOInstance();
 
   deleteIngredient($pdo, $_POST["ingredientId"]);
 
-  require_once("common/utils.php");
+  require_once ("common/utils.php");
   redirectToURL("/"); // add redirect info here too!!
 }
 
 // Fills the form (if id is in url) + function that returns the details of the ingredient
 $ingredient_details = null;
-if (isset($_GET['id'])) {
+if (isset ($_GET['id'])) {
   $ingredientId = $_GET['id'];
-  require_once("common/database.php");
+  require_once ("common/database.php");
   $pdo = getNewPDOInstance();
   $ingredient_details = getIngredientDetailsById($pdo, $ingredientId);
 
@@ -58,7 +84,7 @@ if (isset($_GET['id'])) {
 
   <?php
   $current_page = "update-ingredient";
-  require_once("components/nav.php");
+  require_once ("components/nav.php");
   ?>
 
   <form id="update-ingredient-form" method="post" action="">
@@ -78,23 +104,26 @@ if (isset($_GET['id'])) {
       <div class="col-6">
 
         <div class="form-floating">
-          <input form="update-ingredient-form" type="text" class="form-control" id="name-input" name="ingredientName" placeholder="#" value="<?php echo $ingredient_details['name']; ?>">
+          <input form="update-ingredient-form" type="text" class="form-control" id="name-input" name="ingredientName"
+            placeholder="#" value="<?php echo $ingredient_details['name']; ?>">
           <label for="name-input">Name of the Ingredient</label>
         </div>
 
         <div class="form-floating mt-2">
-          <input form="update-ingredient-form" type="text" class="form-control" id="category-input" name="ingredientCategory" placeholder="#" value="<?php echo $ingredient_details['category']; ?>">
+          <input form="update-ingredient-form" type="text" class="form-control" id="category-input"
+            name="ingredientCategory" placeholder="#" value="<?php echo $ingredient_details['category']; ?>">
           <label for="category-input">Category of the Ingredient</label>
         </div>
 
         <div class="d-flex justify-content-center mt-4">
-          <input form="update-ingredient-form" class="btn btn-primary btn-lg me-2" type="submit" name="updateIngredientFlag" value="Update">
+          <input form="update-ingredient-form" class="btn btn-primary btn-lg me-2" type="submit"
+            name="updateIngredientFlag" value="Update">
         </div>
       </div>
     </div>
   </div>
 
-  <?php require_once("components/footer.php"); ?>
+  <?php require_once ("components/footer.php"); ?>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
